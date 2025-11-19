@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
+# Creates an RSA key pair with specific requirements
 
-# Connect to the server using the private key ~/.ssh/school and the user ubuntu
-ssh -i ~/.ssh/school ubuntu@54.82.136.88
+ssh-keygen -t rsa -b 4096 -f school -N betty
