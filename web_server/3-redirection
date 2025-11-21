@@ -1,26 +1,19 @@
 #!/usr/bin/env bash
-# script that install nginx and configure it to redirect to another page when
-# accessing the /redirect_me page.
-sudo apt update -y
-sudo apt install nginx -y
+# Configures Nginx server with a 301 redirect for /redirect_me
 
-sudo mkdir /etc/nginx/html
-sudo touch /etc/nginx/html/index.html
-# store configuration content
-new_config=\
-"server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-               root /var/www/html;
-        index index.html index.htm index.nginx-debian.html;
-        server_name _;
-        location / {
-                try_files \$uri \$uri/ =404;
-        }
-        location /redirect_me { 
-            return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-        }
-}
-"
-echo "$new_config" > /etc/nginx/sites-available/default
-sudo service nginx restart
+# Update package list and install Nginx
+apt-get update
+apt-get install -y nginx
+
+# Create a custom index.html
+echo "Hello World!" > /var/www/html/index.html
+
+# Add redirect rule to Nginx configuration
+# The string to search for and the line to add after it
+redirect_config="rewrite ^/redirect_me/?\$ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;"
+
+# Use sed to add the redirect after 'listen 80 default_server;'
+sed -i "/listen 80 default_server;/a \\\t$redirect_config" /etc/nginx/sites-available/default
+
+# Restart Nginx to apply changes
+service nginx restart
